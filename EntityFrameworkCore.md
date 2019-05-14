@@ -518,8 +518,6 @@ Se  abría una conexión a la base de datos, crear un conjunto de datos para recup
 
 Microsoft ha proporcionado un marco denominado "**Entity Framework**" para automatizar todas estas actividades relacionadas con la base de datos para una aplicación.
 
-
-
 **Entity Framework** es un marco de **ORM** de código abierto  para aplicaciones .NET admitidas por Microsoft. Permite a los desarrolladores trabajar con datos utilizando objetos de clases específicas del dominio sin centrarse en las tablas y columnas de la base de datos subyacente donde se almacenan estos datos. Con Entity Framework, los desarrolladores pueden trabajar en un nivel más alto de abstracción cuando tratan con datos, y pueden crear y mantener aplicaciones orientadas a datos con menos código en comparación con las aplicaciones tradicionales.
 
 ### Proveedores de bases de datos compatibles
@@ -575,7 +573,7 @@ Entity Framework API (EF6 & EF Core) incluye la capacidad de asignar clases de d
 
 ### Modelo de datos de la entidad
 
-La primera tarea de EF API es construir un modelo de datos de entidad (EDM Entity Data Mode). EDM es una representación en memoria de todos los metadatos: modelo conceptual, modelo de almacenamiento y mapeo entre ellos.
+La primera tarea de EF API es construir un modelo de datos de entidad (**EDM Entity Data Mode**). EDM es una representación en memoria de todos los metadatos: modelo conceptual, modelo de almacenamiento y mapeo entre ellos.
 
 ![](https://github.com/imyourpartner/MyFiles/blob/master/ef-edm.png)
 
@@ -587,14 +585,58 @@ La primera tarea de EF API es construir un modelo de datos de entidad (EDM Entit
 
 EF realiza operaciones CRUD utilizando este EDM. Utiliza EDM para generar consultas SQL a partir de consultas LINQ, para crear comandos INSERT, UPDATE y DELETE, y para transformar el resultado de la base de datos en objetos de entidad.
 
-##### Ejecución de un Query
+### Ejecución de un Query
 
  EF API traduce las consultas de LINQ to Entities a las consultas SQL para bases de datos relacionales utilizando EDM y también convierte los resultados a objetos de entidad.
 
 ![](https://github.com/imyourpartner/MyFiles/blob/master/ef-querying.png)
 
-##### Guardando
+### Guardando
 
 La API de EF infiere los comandos INSERT, UPDATE y DELETE según el estado de las entidades cuando se llama al método `SaveChanges()`. ChangeTrack realiza un seguimiento de los estados de cada entidad a medida que se realiza una acción.
 
 ![](https://github.com/imyourpartner/MyFiles/blob/master/ef-saving.png)
+
+
+
+### Arquitectura Entity Framework 
+
+La siguiente figura muestra la arquitectura general del Entity Framework. Veamos los componentes de la arquitectura individualmente.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/ef-architecture-final.png)
+
+
+
+**EDM (Entity Data Model):** EDM consta de tres partes principales: modelo conceptual, modelo de mapeo y almacenamiento.
+
+**Conceptual Model (Modelo conceptual):** El modelo conceptual contiene las clases del modelo y sus relaciones. Esto será independiente del diseño de la tabla de su base de datos.
+
+**Storage Model (Modelo de almacenamiento):** el modelo de almacenamiento es el modelo de diseño de base de datos que incluye tablas, vistas, procedimientos almacenados y sus relaciones y claves.
+
+**Mapping (Mapeo):** el mapeo consiste en información sobre cómo se mapea el modelo conceptual al modelo de almacenamiento.
+
+**LINQ to Entities:** LINQ to to Entities (L2E) es un lenguaje de consulta que se utiliza para escribir consultas en el modelo de objetos. Devuelve entidades, que se definen en el modelo conceptual. Puedes usar tus habilidades LINQ aquí.
+
+**Entity SQL:** Entity SQL es otro lenguaje de consulta (solo para EF 6) al igual que LINQ to Entities. Sin embargo, es un poco más difícil que L2E y el desarrollador tendrá que aprenderlo por separado.
+
+**Object Service (Servicio de objetos):** el servicio de objetos es un punto de entrada principal para acceder a los datos desde la base de datos y devolverlos. El servicio de objetos es responsable de la materialización, que es el proceso de conversión de los datos devueltos por un proveedor de datos del cliente de entidad (siguiente capa) a una estructura de objeto de entidad.
+
+**Entity Client Data Provider (Proveedor de datos de Entity Client):** la principal responsabilidad de esta capa es convertir las consultas de LINQ-to-Entities o Entity SQL en una consulta SQL que entienda la base de datos subyacente. Se comunica con el proveedor de datos ADO.Net que a su vez envía o recupera datos de la base de datos.
+
+**ADO.Net Data Provider (Proveedor de datos ADO.Net): ** esta capa se comunica con la base de datos utilizando el estándar ADO.Net.
+
+### Enfoques de desarrollo básico de EF
+
+EF Core admite dos enfoques de desarrollo:
+
+1. **Código primero** 
+
+   ó
+
+2. **Base de datos primero.** 
+
+> **Note:** **EF Core se enfoca principalmente en el enfoque de código primero** y proporciona poco soporte para el enfoque de base de datos **porque el diseñador visual o el asistente para el modelo DB no es compatible a partir de EF Core 2.0**
+
+En el primer enfoque de la base de datos, EF Core API crea las clases de dominio y contexto basadas en su base de datos existente mediante los comandos de EF Core. Esto tiene soporte limitado en EF Core ya que no es compatible con el diseñador visual o el asistente.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/ef-core-dev-approaces.png)
