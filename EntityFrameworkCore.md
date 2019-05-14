@@ -1,4 +1,4 @@
-# Documentacion Entity Framework Core
+# Documentación Entity Framework Core
 
 ### ¿Qué es un ORM?
 > El mapeo objeto-relacional (más conocido por su nombre en inglés, Object-Relational mapping, o sus siglas O/RM, ORM, y O/R mapping) es una técnica de programación para convertir datos entre el sistema de tipos utilizado en un lenguaje de programación orientado a objetos y la utilización de una base de datos relacional como motor de persistencia. 
@@ -516,35 +516,85 @@ Se  abría una conexión a la base de datos, crear un conjunto de datos para recup
 
 
 
-### Flujo de trabajo básico en Entity Framework
-
-La siguiente figura ilustra el flujo de trabajo básico.
-
-![Flujo de trabajo básico en Entity Framework](https://github.com/imyourpartner/MyFiles/blob/master/basic-workflowefc.png)
-
 Microsoft ha proporcionado un marco denominado "**Entity Framework**" para automatizar todas estas actividades relacionadas con la base de datos para una aplicación.
 
+
+
 **Entity Framework** es un marco de **ORM** de código abierto  para aplicaciones .NET admitidas por Microsoft. Permite a los desarrolladores trabajar con datos utilizando objetos de clases específicas del dominio sin centrarse en las tablas y columnas de la base de datos subyacente donde se almacenan estos datos. Con Entity Framework, los desarrolladores pueden trabajar en un nivel más alto de abstracción cuando tratan con datos, y pueden crear y mantener aplicaciones orientadas a datos con menos código en comparación con las aplicaciones tradicionales.
+
+### Proveedores de bases de datos compatibles
+
+Entity Framework Core es compatible con muchos proveedores de bases de datos para acceder a diferentes bases de datos y realizar operaciones de base de datos.
+
+- SQL Server
+
+- MySQL
+
+- PostgreSQL
+
+- SQLite
+
+- SQL Compact
+
+- Cosmos
+
+- etc.. [Link oficial de proveedores de base de datos compatibles.](https://docs.microsoft.com/es-es/ef/core/providers/index) 
+
+  
 
 La siguiente figura ilustra la Arquitectura Entity Framework en una aplicación.
 ![Arquitectura EF en una aplicacion](https://github.com/imyourpartner/MyFiles/blob/master/ef-in-app-architecture.png)
 
 
 
+### Flujo de trabajo básico en Entity Framework
 
+La siguiente figura ilustra el flujo de trabajo básico.
 
-Flujo de trabajo básico en Entity Framework
+![Flujo de trabajo básico en Entity Framework](https://github.com/imyourpartner/MyFiles/blob/master/basic-workflowefc.png)
 
 Según la figura anterior, Entity Framework se ajusta entre las **entidades** comerciales (**clases de dominio**) y la base de datos. Guarda los datos almacenados en las propiedades de las entidades comerciales y también recupera los datos de la base de datos y los convierte en objetos de entidades comerciales automáticamente.
 
+1. En pimer lugar, necesitanos definir un modelo. La definición del modelo incluye la definición de las clases de dominio, la clase de contexto derivada de DbContext y las configuraciones (si las hay). EF realizará operaciones CRUD basadas en su modelo.
+
+2. Para insertar datos, agregar un objeto de dominio a un contexto y llamarlo al método `SaveChanges()`. EF API creará un comando INSERT adecuado y lo ejecutará en la base de datos.
+
+3. Para leer datos, se ejecuta la consulta LINQ-to-Entities en su idioma preferido (C # / VB.NET). EF API convertirá esta consulta en consulta SQL para la base de datos relacional subyacente y la ejecutará. El resultado se transformará en objetos de dominio (entidad) y se mostrará en la interfaz de usuario.
+
+4. Para editar o eliminar datos, actualice o elimine objetos de entidad de un contexto y llamar al método `SaveChanges()`. EF API creará el comando UPDATE o DELETE adecuado y lo ejecutará en la base de datos.
+
+   
+
+### ¿Cómo funciona Entity Framework?
+
+Entity Framework API (EF6 & EF Core) incluye la capacidad de asignar clases de dominio (entidad) al esquema de base de datos, traducir y ejecutar consultas de LINQ a SQL, rastrear cambios ocurridos en entidades durante su vida útil y guardar cambios en la base de datos.
+
+![Flujo de trabajo básico en Entity Framework](https://github.com/imyourpartner/MyFiles/blob/master/ef-api.png)
 
 
-### Proveedores de bases de datos compatibles
 
-Entity Framework Core es compatible con muchos proveedores de bases de datos para acceder a diferentes bases de datos y realizar operaciones de base de datos.
+### Modelo de datos de la entidad
 
- - SQL Server
- - MySQL
- - PostgreSQL
- - SQLite
- - SQL Compact
+La primera tarea de EF API es construir un modelo de datos de entidad (EDM Entity Data Mode). EDM es una representación en memoria de todos los metadatos: modelo conceptual, modelo de almacenamiento y mapeo entre ellos.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/ef-edm.png)
+
+**Modelo conceptual:** EF construye el modelo conceptual a partir de sus clases de dominio, clase de contexto, convenciones predeterminadas seguidas en sus clases de dominio y configuraciones.
+
+**Modelo de almacenamiento:** EF crea el modelo de almacenamiento para el esquema de base de datos subyacente. En el enfoque del código primero, esto se deducirá del modelo conceptual. En el primer enfoque de la base de datos, esto se deducirá de la base de datos de destino.
+
+**Mapeo:** EF incluye información de asignación sobre cómo se asigna el modelo conceptual al esquema de la base de datos (modelo de almacenamiento).
+
+EF realiza operaciones CRUD utilizando este EDM. Utiliza EDM para generar consultas SQL a partir de consultas LINQ, para crear comandos INSERT, UPDATE y DELETE, y para transformar el resultado de la base de datos en objetos de entidad.
+
+##### Ejecución de un Query
+
+ EF API traduce las consultas de LINQ to Entities a las consultas SQL para bases de datos relacionales utilizando EDM y también convierte los resultados a objetos de entidad.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/ef-querying.png)
+
+##### Guardando
+
+La API de EF infiere los comandos INSERT, UPDATE y DELETE según el estado de las entidades cuando se llama al método `SaveChanges()`. ChangeTrack realiza un seguimiento de los estados de cada entidad a medida que se realiza una acción.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/ef-saving.png)
