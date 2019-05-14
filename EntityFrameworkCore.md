@@ -24,8 +24,10 @@ EF Core es un asignador relacional de objetos (ORM) que permite a los desarrolla
 Antes de la version .NET 3.5, los desarrolladores usaban para escribir código ADO.NET o Enterprise Data Access Block para guardar o recuperar datos de aplicaciones de la base de datos subyacente.
 
 La mayoría de los marcos de desarrollo incluyen bibliotecas que permiten el acceso a datos desde bases de datos relacionales a través de estructuras de datos similares a un conjunto de registros. El siguiente ejemplo de código ilustra un escenario típico de uso de ADO.NET:
+
 ![DAL](https://github.com/imyourpartner/MyFiles/blob/master/ADODotNetDataAccessLayer.jpg)
  - Stored Procedures
+
 ```sql
 CREATE PROCEDURE dbo.GetBooks
 AS
@@ -62,18 +64,175 @@ AS
 ```
 
 
+ -  Web.config 
+
 ```csharp
-using(var conn = new SqlConnection(connectionString))
-using(var cmd = new SqlCommand("select * from Products", conn))
+    <connectionStrings>
+      <add name="database" connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|\Database.mdf;Integrated Security=True;User Instance=True" 
+                providerName="System.Data.SqlClient"/>
+    </connectionStrings>
+```
+
+
+ - Clase que retorna la cadena de conexión con el nombre desde mi archivo web.config
+
+```csharp
+using System;
+using System.Configuration;
+using System.Web.Configuration;
+
+public class Database
 {
-    var dt = new DataTable();
-    using(var da = new SqlDataAdapter(cmd))
+    static public String ConnectionString 
     {
-        da.Fill(dt);
+       get
+       {    // get connection string with name  database from  web.config.
+            return WebConfigurationManager.ConnectionStrings["database"].ConnectionString;
+       }
     }
 }
 ```
 
+
+ - Clase Libro, representacion del modelo 
+```csharp
+using System;
+
+public class Book
+{
+    // Using automatically implemented properties feature of C# 3.0
+    public int Bookid { get; set; }
+    public string Title { get; set; }
+    public string Authors { get; set; }
+    public string Publishers { get; set; }
+    public double Price { get; set; }
+}
+```
+
+ - Clase DAL Data Access Layer
+
+
+```csharp
+using System;
+using System.Data.SqlClient;
+using System.Data;
+
+public class BooksDAL
+{
+    public static DataSet GetBooks()
+    {
+        SqlConnection con = new SqlConnection(Database.ConnectionString);
+        SqlDataAdapter da = new SqlDataAdapter("getbooks", con);
+        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+        DataSet ds = new DataSet();
+        da.Fill(ds, "books");
+        return ds;
+    }
+
+    public static Book GetBook(int bookid)
+    {
+        SqlConnection con = new SqlConnection(Database.ConnectionString);
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("getbook", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@bookid", bookid);
+            SqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                Book b = new Book();
+                b.Title = dr["title"].ToString();
+                b.Authors = dr["authors"].ToString();
+                b.Price = Double.Parse(dr["price"].ToString());
+                b.Publishers = dr["publisher"].ToString();
+                return b;
+            }
+            else
+                return null;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+        finally
+        {
+            con.Close();
+        }
+    }
+
+    public static string AddBook(string title, string authors, double price, string publisher)
+    {
+        SqlConnection con = new SqlConnection(Database.ConnectionString);
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("addbook", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@title", title);
+            cmd.Parameters.AddWithValue("@authors",authors);
+            cmd.Parameters.AddWithValue("@price",price);
+            cmd.Parameters.AddWithValue("@publisher", publisher);
+            cmd.ExecuteNonQuery();
+            return null; // success 
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;  // return error message
+        }
+        finally
+        {
+            con.Close();
+        }
+    }
+    public static string DeleteBook(int bookid)
+    {
+        SqlConnection con = new SqlConnection(Database.ConnectionString);
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("deletebook", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@bookid", bookid);
+            cmd.ExecuteNonQuery();
+            return null; // success 
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;  // return error message
+        }
+        finally
+        {
+            con.Close();
+        }
+    }
+    public static string UpdateBook(int bookid, string title, string authors, double price, string publisher)
+    {
+        SqlConnection con = new SqlConnection(Database.ConnectionString);
+        try
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("updatebook", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@bookid", bookid);
+            cmd.Parameters.AddWithValue("@title", title);
+            cmd.Parameters.AddWithValue("@authors", authors);
+            cmd.Parameters.AddWithValue("@price", price);
+            cmd.Parameters.AddWithValue("@publisher", publisher);
+            cmd.ExecuteNonQuery();
+            return null; // success 
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;  // return error message
+        }
+        finally
+        {
+            con.Close();
+        }
+    }
+}
+```
 Se  abria una conexión a la base de datos, crear un conjunto de datos para recuperar o enviar los datos a la base de datos, convertir los datos del conjunto de datos a objetos .NET o viceversa para aplicar reglas de negocios. Este fue un proceso engorroso y propenso a errores. 
 
 Microsoft ha proporcionado un marco denominado "Entity Framework" para automatizar todas estas actividades relacionadas con la base de datos para su aplicación.
