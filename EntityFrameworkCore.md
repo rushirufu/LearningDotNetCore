@@ -14,16 +14,14 @@ Casi todos los lenguajes de alto nivel actualmente disponen de alguna solución d
  - .NET: Entity Framework, nHibernate, etc..
  - PHP: Doctrine, Propel, ROcks, Torpor, etc..
 
-### ¿Qué es Entity Framework 
+### ¿Qué es Entity Framework?
 
 EF Core es un asignador relacional de objetos (ORM) que permite a los desarrolladores .NET trabajar con una base de datos utilizando objetos .NET.
 
 
-
-
 Antes de la version .NET 3.5, los desarrolladores usaban para escribir código ADO.NET o Enterprise Data Access Block para guardar o recuperar datos de aplicaciones de la base de datos subyacente.
 
-La mayoría de los marcos de desarrollo incluyen bibliotecas que permiten el acceso a datos desde bases de datos relacionales a través de estructuras de datos similares a un conjunto de registros. El siguiente ejemplo de código ilustra un escenario típico de uso de ADO.NET:
+La mayoría de los marcos de desarrollo incluyen bibliotecas que permiten el acceso a datos desde bases de datos relacionales a través de estructuras de datos similares a un conjunto de registros. El siguiente ejemplo de un proyecto ASP.NET con operaciones CRUD ilustra un escenario típico de uso de ADO.NET:
 
 ![DAL](https://github.com/imyourpartner/MyFiles/blob/master/ADODotNetDataAccessLayer.jpg)
  - Stored Procedures
@@ -512,13 +510,33 @@ public partial class listbooks : System.Web.UI.Page
 }
 ```
 
+> **Nota:** Link de la aplicacion asp.net  con capa de acceso a datos **DAL** http://www.srikanthtechnologies.com/blog/dotnet/adonetcrud2.aspx
+
+Se  abría una conexión a la base de datos, crear un conjunto de datos para recuperar o enviar los datos a la base de datos, convertir los datos del conjunto de datos a objetos .NET o viceversa para aplicar reglas de negocios. Este fue un proceso engorroso y propenso a errores. 
 
 
-Se  abria una conexión a la base de datos, crear un conjunto de datos para recuperar o enviar los datos a la base de datos, convertir los datos del conjunto de datos a objetos .NET o viceversa para aplicar reglas de negocios. Este fue un proceso engorroso y propenso a errores. 
 
-Microsoft ha proporcionado un marco denominado "Entity Framework" para automatizar todas estas actividades relacionadas con la base de datos para su aplicación.
+### Flujo de trabajo básico en Entity Framework
 
-Entity Framework es un marco de ORM de código abierto  para aplicaciones .NET admitidas por Microsoft. Permite a los desarrolladores trabajar con datos utilizando objetos de clases específicas del dominio sin centrarse en las tablas y columnas de la base de datos subyacente donde se almacenan estos datos. Con el Entity Framework, los desarrolladores pueden trabajar en un nivel más alto de abstracción cuando tratan con datos, y pueden crear y mantener aplicaciones orientadas a datos con menos código en comparación con las aplicaciones tradicionales.
+La siguiente figura ilustra el flujo de trabajo básico.
+
+![Flujo de trabajo básico en Entity Framework](https://github.com/imyourpartner/MyFiles/blob/master/basic-workflowefc.png)
+
+Microsoft ha proporcionado un marco denominado "**Entity Framework**" para automatizar todas estas actividades relacionadas con la base de datos para una aplicación.
+
+**Entity Framework** es un marco de **ORM** de código abierto  para aplicaciones .NET admitidas por Microsoft. Permite a los desarrolladores trabajar con datos utilizando objetos de clases específicas del dominio sin centrarse en las tablas y columnas de la base de datos subyacente donde se almacenan estos datos. Con Entity Framework, los desarrolladores pueden trabajar en un nivel más alto de abstracción cuando tratan con datos, y pueden crear y mantener aplicaciones orientadas a datos con menos código en comparación con las aplicaciones tradicionales.
+
+La siguiente figura ilustra la Arquitectura Entity Framework en una aplicación.
+![Arquitectura EF en una aplicacion](https://github.com/imyourpartner/MyFiles/blob/master/ef-in-app-architecture.png)
+
+
+
+
+
+Flujo de trabajo básico en Entity Framework
+
+Según la figura anterior, Entity Framework se ajusta entre las **entidades** comerciales (**clases de dominio**) y la base de datos. Guarda los datos almacenados en las propiedades de las entidades comerciales y también recupera los datos de la base de datos y los convierte en objetos de entidades comerciales automáticamente.
+
 
 
 ### Proveedores de bases de datos compatibles
