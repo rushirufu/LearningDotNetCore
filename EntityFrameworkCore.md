@@ -1,4 +1,6 @@
-# Documentación Entity Framework Core
+# Documentación Entity Framework Core.
+
+## namespace Microsoft.EntityFrameworkCore{}
 
 ### ¿Qué es un ORM?
 > El mapeo objeto-relacional (más conocido por su nombre en inglés, Object-Relational mapping, o sus siglas O/RM, ORM, y O/R mapping) es una técnica de programación para convertir datos entre el sistema de tipos utilizado en un lenguaje de programación orientado a objetos y la utilización de una base de datos relacional como motor de persistencia. 
@@ -623,7 +625,7 @@ La siguiente figura muestra la arquitectura general del Entity Framework. Veamos
 
 **Entity Client Data Provider (Proveedor de datos de Entity Client):** la principal responsabilidad de esta capa es convertir las consultas de LINQ-to-Entities o Entity SQL en una consulta SQL que entienda la base de datos subyacente. Se comunica con el proveedor de datos ADO.Net que a su vez envía o recupera datos de la base de datos.
 
-**ADO.Net Data Provider (Proveedor de datos ADO.Net): ** esta capa se comunica con la base de datos utilizando el estándar ADO.Net.
+**ADO.Net Data Provider (Proveedor de datos ADO.Net):** esta capa se comunica con la base de datos utilizando el estándar ADO.Net.
 
 ### Enfoques de desarrollo básico de EF
 
@@ -640,3 +642,105 @@ EF Core admite dos enfoques de desarrollo:
 En el primer enfoque de la base de datos, EF Core API crea las clases de dominio y contexto basadas en su base de datos existente mediante los comandos de EF Core. Esto tiene soporte limitado en EF Core ya que no es compatible con el diseñador visual o el asistente.
 
 ![](https://github.com/imyourpartner/MyFiles/blob/master/ef-core-dev-approaces.png)
+
+
+
+### Context Class (DbContext Class) en Entity Framework
+
+La clase de contexto es una clase muy importante mientras se trabaja con EF 6 o EF Core. Representa una sesión con la base de datos subyacente mediante la cual puede realizar las operaciones CRUD (Create, Read, Undate, Delete).
+
+`DbContext` En EF Core nos permite realizar las siguientes tareas:
+
+1. Administrar la conexión de la base de datos
+2. Configurar modelo y relación
+3. Consulta a base de datos
+4. Guardar datos en la base de datos
+5. Configurar el seguimiento de cambios
+6. Almacenamiento en caché
+7. Gestión de transacciones
+
+
+
+ Una instancia de `DbContext`representa una sesión con la base de datos que se puede usar para consultar y guardar instancias de sus entidades en una base de datos. 
+
+El DBContext es el corazón del Entity Framework. Es la conexión entre nuestras clases de entidad y la base de datos. El DBContext es responsable de las interacciones de la base de datos, como consultar la base de datos y cargar los datos en la memoria como entidad. También realiza un seguimiento de los cambios realizados en la entidad y persiste los cambios en la base de datos.
+
+Una instancia de la clase de contexto representa los patrones de Unidad de trabajo y Repositorio en los que puede combinar múltiples cambios en una sola transacción de base de datos.
+
+
+
+La siguiente clase base se acaba de declarar como `SchoolDbContext` es un ejemplo de una clase de contexto.
+
+Para usar DBContext, necesitamos crear una clase y derivarla de la clase base DbContext . El siguiente es el ejemplo de la clase de contexto (EFContext)
+
+```c#
+/* 
+Namespace: Microsoft.EntityFrameworkCore
+Assembly: Microsoft.EntityFrameworkCore.dll
+https://docs.microsoft.com/es-es/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-2.1
+*/
+
+public class MySchoolName : DbContext // Inheritance DbContext Class
+{
+    public MySchoolName()
+	{
+        // Constructor Class
+	}
+    // Begin Entities
+    //..
+	//  End Entities
+} 
+```
+
+//  
+
+```c#
+public class SchoolContext : DbContext
+{
+    public SchoolContext(DbContextOptions<ApplicationDbContext> options)
+    {
+		// Constructor
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+    	// use this to configure the contex
+    	
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+    	// use this to configure the model with API Fluent.
+    }
+    // Entities
+    public DbSet<Student> Students { get; set; }
+    public DbSet<Course> Courses { get; set; }
+}
+```
+
+En el ejemplo anterior, la clase `SchoolContext` se deriva de la clase `DbContext`y contiene las propiedades `DbSet<TEntity>` `Student`y `Course`. También anula los métodos `OnConfiguring`y `OnModelCreating`.Hay que crear una instancia de `SchoolContext`conectarse a la base de datos y guardar o recuperar `Student`o `Course`datos.
+
+El método  `OnConfiguring()`nos permite seleccionar y configurar la fuente de datos que se usará con un contexto usando `DbContextOptionsBuilder`. Aprende cómo configurar una clase DbContext [aquí](https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext) .
+
+El  `OnModelCreating()`nos permite configurar el modelo utilizando la `ModelBuilder`API Fluent.
+
+
+
+
+
+### `DbSet<TEntity>Class `
+
+La clase`DbSet<TEntity>`  representa una colección para una entidad dada dentro del modelo y es la puerta de entrada a las operaciones de base de datos contra una entidad.  Las clases `DbSet<TEntity> se agregan como propiedades a `DbContext`y se asignan de forma predeterminada a las tablas de base de datos que toman el nombre de la propiedad`DbSet<TEntity>`. El `DbSet es una implementación del patrón Repositorio.
+
+Se puede sar una propiedad DbSet para consultar y guardar instancias de `TEntity`. (Clase Generica) Las consultas LINQ contra un [DbSet ](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1?view=efcore-2.0) se traducirán en consultas contra la base de datos. 
+
+Los resultados de una consulta LINQ contra un [DbSet ](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1?view=efcore-2.0) contendrán los resultados devueltos por la base de datos y es posible que no reflejen los cambios realizados en el contexto que no se han conservado en la base de datos. Por ejemplo, los resultados no contendrán entidades recién agregadas y pueden contener entidades marcadas para su eliminación.
+
+Dependiendo de la base de datos que se esté utilizando, algunas partes de una consulta LINQ contra una [ DbSet](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1?view=efcore-2.0) pueden evaluarse en la memoria en lugar de traducirse a una consulta de la base de datos.
+
+Los objetos  DbSet generalmente se obtienen de una propiedad  DbSet en un [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-2.0) derivado o del método `Set<TEntity>() `
+
+```
+
+```
+
