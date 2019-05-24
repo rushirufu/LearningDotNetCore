@@ -55,7 +55,9 @@ namespace WebApplication.Migrations
                 {
                     ClienteID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nombre = table.Column<string>(nullable: true)
+                    DNI = table.Column<int>(nullable: false),
+                    Nombre = table.Column<string>(nullable: true),
+                    Apellido = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -169,12 +171,37 @@ namespace WebApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "InfoContacto",
+                columns: table => new
+                {
+                    InfoContactoID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Telefono = table.Column<string>(nullable: true),
+                    Pais = table.Column<string>(nullable: true),
+                    Estado = table.Column<string>(nullable: true),
+                    Direccion = table.Column<string>(nullable: true),
+                    ClienteID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InfoContacto", x => x.InfoContactoID);
+                    table.ForeignKey(
+                        name: "FK_InfoContacto_Clientes_ClienteID",
+                        column: x => x.ClienteID,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pagos",
                 columns: table => new
                 {
                     PagoID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    NTransferencia = table.Column<int>(nullable: false),
                     Monto = table.Column<int>(nullable: false),
+                    Registro = table.Column<DateTime>(nullable: false),
                     ClienteID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -228,6 +255,12 @@ namespace WebApplication.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InfoContacto_ClienteID",
+                table: "InfoContacto",
+                column: "ClienteID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pagos_ClienteID",
                 table: "Pagos",
                 column: "ClienteID");
@@ -249,6 +282,9 @@ namespace WebApplication.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "InfoContacto");
 
             migrationBuilder.DropTable(
                 name: "Pagos");

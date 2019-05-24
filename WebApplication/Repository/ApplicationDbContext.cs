@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication.Models;
+using WebApplication.Repository;
 
 namespace WebApplication.Repository
 {
@@ -27,6 +28,8 @@ namespace WebApplication.Repository
         }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Pago> Pagos { get; set; }
+        public DbSet<InfoContacto> InfoContacto { get; set; }
+        public DbSet<WebApplication.Repository.RegistroClienteViewModel> RegistroClienteViewModel { get; set; }
     }
 
 
@@ -38,28 +41,35 @@ namespace WebApplication.Repository
         public int DNI { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        // Propiedad De Navegacion
         public List<Pago> Pagos { get; set; }
+        public InfoContacto InfoContacto { get; set; }
     }
 
     public class Pago
     {
         // PK - Primary Key
-        public int PagoID { get; set; } 
+        public int PagoID { get; set; }
+        public int NTransferencia { get; set; }
         public int Monto { get; set; }
         public DateTime Registro{ get; set; }
         // Fk - Foreign Key
         public int ClienteID { get; set; }
+        // Propiedad De Navegacion
+        public Cliente Cliente { get; set; }
     }
 
     public class InfoContacto
     {
         // PK - Primary Key
-        public int ClienteID { get; set; }
+        public int InfoContactoID { get; set; }
+        public string Telefono { get; set; }
         public string Pais { get; set; }
         public string Estado { get; set; }
         public string Direccion { get; set; }
-        public string Telefono { get; set; }
+        // Fk - Foreign Key
+        public int ClienteID { get; set; }
+        // Propiedad De Navegacion
+        public Cliente Cliente { get; set; }
     }
     #endregion
 
@@ -67,9 +77,13 @@ namespace WebApplication.Repository
 
     public class RegistroClienteViewModel
     {
-        [Required]
-        public int PagoID { get; set; }
-        public int Monto { get; set; }
+        [Key]
+        public int ClienteID { get; set; }
+        public int DNI { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
+        //public InfoContacto InfoContacto { get; set; }
     }
     #endregion
 }
+

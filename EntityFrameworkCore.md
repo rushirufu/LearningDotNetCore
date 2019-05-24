@@ -740,9 +740,11 @@ Dependiendo de la base de datos que se esté utilizando, algunas partes de una co
 
 Los objetos  DbSet generalmente se obtienen de una propiedad  DbSet en un [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-2.0) derivado o del método `Set<TEntity>() `
 
-# Code First
+### Code First
 
-# Relaciones de uno a muchos
+Una relación define cómo dos entidades se relacionan entre sí. En una base de datos relacional, esto se representa mediante una restricción foreign key.
+
+### Relacion  uno a muchos
 
 En una relación de uno a muchos, un registro de una tabla se puede asociar a uno o varios registros de otra tabla.. Por ejemplo, cada cliente puede tener varios pedidos de ventas.
 
@@ -777,15 +779,72 @@ public class Pago
     // Fk - Foreign Key
     public int ClienteID { get; set; }
 }
+```
+
+
+
+### Relación  uno a uno
+
+En una relación de uno a uno, un registro de una tabla se asocia a uno y solo un registro de otra tabla. Por ejemplo, en una base de datos de un centro educativo, cada alumno tiene solamente un ID de estudiante, y cada ID de estudiante se asigna solo a una persona.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/one-to-one.png)
+
+En este ejemplo, el campo de clave de cada tabla, ID de estudiante, se ha diseñado para contener valores exclusivos. En la tabla Alumnos, el campo ID de estudiante es la clave principal; en la tabla Información de contacto, el campo ID de estudiante es una clave externa.
+
+Esta relación devuelve registros relacionados cuando el valor del campo ID de estudiante de la tabla Información de contacto es el mismo que el del campo ID de estudiante de la tabla Alumnos.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/relational.07.03.2.png)
+
+```c#
+public class Alumno
+{
+    // PK - Primary Key
+    public int AlumnoID { get; set; }
+    public string Nombre { get; set; }
+    public string Apellido { get; set; }
+}
 
 public class InfoContacto
 {
     // PK - Primary Key
-    public int ClienteID { get; set; }
-    public string Pais { get; set; }
-    public string Estado { get; set; }
-    public string Direccion { get; set; }
+    public int AlumnoID { get; set; }
+    public string Ciudad { get; set; }
     public string Telefono { get; set; }
+    public string Pais { get; set; }
+    public string Direccion { get; set; }
 }
 ```
 
+
+
+### Relación muchos a muchos
+
+Una *relación de muchos a muchos* se produce cuando varios registros de una tabla se asocian a varios registros de otra tabla. Por ejemplo, existe una relación de muchos a muchos entre los clientes y los productos: los clientes pueden comprar varios productos y los productos pueden ser comprados por muchos clientes.
+
+Por lo general, los sistemas de bases de datos relacionales no permiten implementar una relación directa de muchos a muchos entre dos tablas. Tenga en cuenta el ejemplo de seguimiento de facturas. Si había muchas facturas con el mismo número de factura y uno de sus clientes preguntó acerca de ese número de factura, no sabría a qué número se refería. Este es el motivo por el que se debe asignar un valor exclusivo a cada factura.
+
+Para evitar este problema, puede dividir la relación de muchos a muchos en dos relaciones de uno a muchos mediante el uso de una tercera tabla denominada *tabla de unión*. Cada registro de una tabla de unión incluye un campo de coincidencia que contiene el valor de las claves principales de las dos tablas que se unen. (En la tabla de unión, estos campos de coincidencia son claves externas). Estos campos de clave externa se rellenan con datos, ya que los registros de la tabla de unión se crean desde cualquiera de las tablas que se unen.
+
+Un ejemplo típico de una relación de muchos a muchos es aquella entre los estudiantes y las clases. Un estudiante puede matricularse en muchas clases y una clase puede incluir muchos estudiantes.
+
+En el siguiente ejemplo, se incluye una tabla Alumnos, que contiene un registro para cada estudiante, y una tabla Clases, que contiene un registro para cada clase. Una tabla de unión, Matrículas, crea una relación de uno a muchos, una entre cada una de las dos tablas.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/relational.07.06.1.png)
+
+La clave principal ID de estudiante identifica de forma exclusiva a cada estudiante de la tabla Alumnos. La clave principal ID de clase identifica de forma exclusiva cada clase de la tabla Clases. La tabla Matrículas contiene las claves externas ID de estudiante e ID de clase.
+
+Para configurar una tabla de unión para una relación de muchos a muchos:
+
+**1.**Mediante el uso del ejemplo, anterior, cree una tabla denominada Matrículas. Esta será la tabla de unión.
+
+**2.**En la tabla Matrículas, cree un campo ID de estudiante y un campo ID de clase.
+
+Por lo general, las tablas de unión contienen campos que no tienen sentido en otras tablas. Puede añadir campos a la tabla Matrículas, como un campo Fecha para mantener un registro de cuándo alguien inició una clase y un campo Coste para rastrear cuánto pagó un estudiante por realizar una clase.
+
+**3.**Cree una relación entre los dos campos ID de estudiante de las tablas. A continuación, cree una relación entre los dos campos ID de clase de las tablas.
+
+Mediante este diseño, si un estudiante se matricula en tres clases, ese estudiante tendrá un registro en la tabla Alumnos y tres registros en la tabla Matrículas: un registro para cada clase en la que se ha matriculado el estudiante.
+
+## Notas 
+
+•Las tablas de unión pueden acceder a los campos y los datos entre tablas sin necesidad de crear una relación diferente. Por ejemplo, para visualizar una lista de todas las clases en las que se ha matriculado un estudiante, cree un portal en una presentación en función de la tabla Alumnos. Diseñe el portal para que muestre registros relacionados de la tabla Clases. A continuación, añada los campos adecuados de Clases al portal. A medida que se desplaza por los registros de la presentación Alumnos, el portal muestra todas las clases en las que se ha matriculado un estudiante específico.

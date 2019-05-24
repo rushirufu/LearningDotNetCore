@@ -190,11 +190,39 @@ namespace WebApplication.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Apellido");
+
+                    b.Property<int>("DNI");
+
                     b.Property<string>("Nombre");
 
                     b.HasKey("ClienteID");
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("WebApplication.Repository.InfoContacto", b =>
+                {
+                    b.Property<int>("InfoContactoID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClienteID");
+
+                    b.Property<string>("Direccion");
+
+                    b.Property<string>("Estado");
+
+                    b.Property<string>("Pais");
+
+                    b.Property<string>("Telefono");
+
+                    b.HasKey("InfoContactoID");
+
+                    b.HasIndex("ClienteID")
+                        .IsUnique();
+
+                    b.ToTable("InfoContacto");
                 });
 
             modelBuilder.Entity("WebApplication.Repository.Pago", b =>
@@ -206,6 +234,10 @@ namespace WebApplication.Migrations
                     b.Property<int>("ClienteID");
 
                     b.Property<int>("Monto");
+
+                    b.Property<int>("NTransferencia");
+
+                    b.Property<DateTime>("Registro");
 
                     b.HasKey("PagoID");
 
@@ -259,9 +291,17 @@ namespace WebApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("WebApplication.Repository.InfoContacto", b =>
+                {
+                    b.HasOne("WebApplication.Repository.Cliente", "Cliente")
+                        .WithOne("InfoContacto")
+                        .HasForeignKey("WebApplication.Repository.InfoContacto", "ClienteID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("WebApplication.Repository.Pago", b =>
                 {
-                    b.HasOne("WebApplication.Repository.Cliente")
+                    b.HasOne("WebApplication.Repository.Cliente", "Cliente")
                         .WithMany("Pagos")
                         .HasForeignKey("ClienteID")
                         .OnDelete(DeleteBehavior.Cascade);
