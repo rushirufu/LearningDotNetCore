@@ -740,7 +740,18 @@ Dependiendo de la base de datos que se esté utilizando, algunas partes de una co
 
 Los objetos  DbSet generalmente se obtienen de una propiedad  DbSet en un [DbContext](https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext?view=efcore-2.0) derivado o del método `Set<TEntity>() `
 
-```
+# Code First
 
-```
+# Relaciones de uno a muchos
 
+En una relación de uno a muchos, un registro de una tabla se puede asociar a uno o varios registros de otra tabla.. Por ejemplo, cada cliente puede tener varios pedidos de ventas.
+
+Una relación de uno a muchos presenta el siguiente aspecto en el gráfico de relaciones:
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/one-to-many.png)
+
+En este ejemplo, el campo de clave principal de la tabla Clientes, ID de cliente, se ha diseñado para contener valores exclusivos. El campo de clave externa de la tabla Pedidos, ID de cliente, se ha diseñado para permitir varias instancias del mismo valor.
+
+![](https://github.com/imyourpartner/MyFiles/blob/master/relational.07.04.2.png)
+
+Esta relación devuelve registros relacionados cuando el valor del campo ID de cliente de la tabla Pedidos es el mismo que el valor del campo ID de cliente de la tabla Clientes.

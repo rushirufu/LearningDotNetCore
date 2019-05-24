@@ -7,32 +7,40 @@ using System.Threading.Tasks;
 
 namespace WebApplication.Repository
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
-        // public DbSet<MyIdentityModel> Product { get; set; }
-    }
-}
 
-public class SchoolDBContext : DbContext
-{
-    public SchoolDBContext()
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //use this to configure the contex
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+        }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Pago> Pagos { get; set; }
+    }
+
+    public class Cliente
     {
+        public int ClienteID { get; set; }
+        public string Nombre { get; set; }
 
+        public List<Pago> Pagos { get; set; }
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public class Pago
     {
-        //use this to configure the contex
-    }
+        public int PagoID { get; set; }
+        public int Monto  { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+        public int ClienteID { get; set; }
     }
-    //entities
-    //public DbSet<Student> Students { get; set; }
-   // public DbSet<Course> Courses { get; set; }
 }
