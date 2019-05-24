@@ -755,3 +755,37 @@ En este ejemplo, el campo de clave principal de la tabla Clientes, ID de cliente
 ![](https://github.com/imyourpartner/MyFiles/blob/master/relational.07.04.2.png)
 
 Esta relación devuelve registros relacionados cuando el valor del campo ID de cliente de la tabla Pedidos es el mismo que el valor del campo ID de cliente de la tabla Clientes.
+
+```c#
+public class Cliente
+{
+    // PK - Primary Key
+    public int ClienteID { get; set; }
+    public int DNI { get; set; }
+    public string Nombre { get; set; }
+    public string Apellido { get; set; }
+    // Propiedad De Navegacion
+    public List<Pago> Pagos { get; set; }
+}
+
+public class Pago
+{
+    // PK - Primary Key
+    public int PagoID { get; set; } 
+    public int Monto { get; set; }
+    public DateTime Registro{ get; set; }
+    // Fk - Foreign Key
+    public int ClienteID { get; set; }
+}
+
+public class InfoContacto
+{
+    // PK - Primary Key
+    public int ClienteID { get; set; }
+    public string Pais { get; set; }
+    public string Estado { get; set; }
+    public string Direccion { get; set; }
+    public string Telefono { get; set; }
+}
+```
+

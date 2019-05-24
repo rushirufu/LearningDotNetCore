@@ -8,7 +8,7 @@ namespace WebApplication.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public int PropertyA { get; set; }
         public int MyPropertyB { get; set; }
+        public string CustomTag { get; set; }
     }
 }
