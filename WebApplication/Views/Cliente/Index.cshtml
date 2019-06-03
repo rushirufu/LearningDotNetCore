@@ -1,13 +1,13 @@
-﻿@model IEnumerable<WebApplication.Repository.RegistroClienteViewModel>
+﻿@model IEnumerable<WebApplication.Repository.Cliente>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "asd";
 }
 
-<h2>Index</h2>
+<h2>Lista de Clientes</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Registro">Nuevo Cliente</a>
 </p>
 <table class="table">
     <thead>
@@ -37,9 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Apellido)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ClienteID">Edit</a> |
+                @*<a asp-action="Edit" asp-route-id="@item.ClienteID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ClienteID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ClienteID">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.ClienteID">Delete</a>*@
             </td>
         </tr>
 }

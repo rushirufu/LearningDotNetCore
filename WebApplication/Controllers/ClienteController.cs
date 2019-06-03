@@ -12,15 +12,48 @@ namespace WebApplication.Controllers
         private readonly ApplicationDbContext ctx;
         public ClienteController(ApplicationDbContext context)
         {
-           ctx = context;
-        }
-        public IActionResult Index()
-        {
-            return View(ctx.RegistroClienteViewModel.ToList());
+            ctx = context;
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View(ctx.Clientes.ToList());
+        }
+
+        [HttpGet]
         public IActionResult Registro()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Registro(RegistroClienteViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                Cliente ModeloCliente = new Cliente()
+                {
+                    DNI = vm.DNI,
+                    Nombre = vm.Nombre,
+                    Apellido = vm.Apellido,
+                };
+
+                ClienteDatosDeContacto datosContacto = new ClienteDatosDeContacto()
+                {
+                    Pais = vm.Pais,
+                    Estado = vm.Estado,
+                    Direccion = vm.Direccion,
+                    TelefonoLocal = vm.TelefonoLocal,
+                    TelefonoCelular = vm.TelefonoCelular
+                    
+                };
+                ModeloCliente.DatosDeContacto = datosContacto; // Propiedad de navegacion
+
+                ctx.Add(ModeloCliente);
+                ctx.SaveChanges();
+            }
+
             return View();
         }
     }

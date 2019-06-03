@@ -15,7 +15,7 @@ namespace WebApplication.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -186,64 +186,70 @@ namespace WebApplication.Migrations
 
             modelBuilder.Entity("WebApplication.Repository.Cliente", b =>
                 {
-                    b.Property<int>("ClienteID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Apellido");
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnName("apellido")
+                        .HasMaxLength(20);
 
-                    b.Property<int>("DNI");
+                    b.Property<string>("DNI")
+                        .IsRequired()
+                        .HasColumnName("dni")
+                        .HasMaxLength(20)
+                        .IsUnicode(true);
 
-                    b.Property<string>("Nombre");
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnName("nombre")
+                        .HasMaxLength(20);
 
-                    b.HasKey("ClienteID");
+                    b.HasKey("Id");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Tabla_Clientes");
                 });
 
-            modelBuilder.Entity("WebApplication.Repository.InfoContacto", b =>
+            modelBuilder.Entity("WebApplication.Repository.ClienteDatosDeContacto", b =>
                 {
-                    b.Property<int>("InfoContactoID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ClienteID");
 
-                    b.Property<string>("Direccion");
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnName("direccion")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Estado");
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnName("estado")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Pais");
+                    b.Property<string>("Pais")
+                        .IsRequired()
+                        .HasColumnName("pais")
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Telefono");
+                    b.Property<int>("TelefonoCelular")
+                        .HasColumnName("telefono_celular")
+                        .HasMaxLength(20);
 
-                    b.HasKey("InfoContactoID");
+                    b.Property<int>("TelefonoLocal")
+                        .HasColumnName("telefono_local")
+                        .HasMaxLength(20);
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ClienteID")
                         .IsUnique();
 
-                    b.ToTable("InfoContacto");
-                });
-
-            modelBuilder.Entity("WebApplication.Repository.Pago", b =>
-                {
-                    b.Property<int>("PagoID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ClienteID");
-
-                    b.Property<int>("Monto");
-
-                    b.Property<int>("NTransferencia");
-
-                    b.Property<DateTime>("Registro");
-
-                    b.HasKey("PagoID");
-
-                    b.HasIndex("ClienteID");
-
-                    b.ToTable("Pagos");
+                    b.ToTable("Tabla_ClienteDatosDeContacto");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -291,19 +297,11 @@ namespace WebApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WebApplication.Repository.InfoContacto", b =>
+            modelBuilder.Entity("WebApplication.Repository.ClienteDatosDeContacto", b =>
                 {
                     b.HasOne("WebApplication.Repository.Cliente", "Cliente")
-                        .WithOne("InfoContacto")
-                        .HasForeignKey("WebApplication.Repository.InfoContacto", "ClienteID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("WebApplication.Repository.Pago", b =>
-                {
-                    b.HasOne("WebApplication.Repository.Cliente", "Cliente")
-                        .WithMany("Pagos")
-                        .HasForeignKey("ClienteID")
+                        .WithOne("DatosDeContacto")
+                        .HasForeignKey("WebApplication.Repository.ClienteDatosDeContacto", "ClienteID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

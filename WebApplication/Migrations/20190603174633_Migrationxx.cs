@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApplication.Migrations
 {
-    public partial class Migrations : Migration
+    public partial class Migrationxx : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,18 +50,18 @@ namespace WebApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clientes",
+                name: "Tabla_Clientes",
                 columns: table => new
                 {
-                    ClienteID = table.Column<int>(nullable: false)
+                    id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DNI = table.Column<int>(nullable: false),
-                    Nombre = table.Column<string>(nullable: true),
-                    Apellido = table.Column<string>(nullable: true)
+                    dni = table.Column<string>(maxLength: 20, nullable: false),
+                    nombre = table.Column<string>(maxLength: 20, nullable: false),
+                    apellido = table.Column<string>(maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clientes", x => x.ClienteID);
+                    table.PrimaryKey("PK_Tabla_Clientes", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,47 +171,26 @@ namespace WebApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InfoContacto",
+                name: "Tabla_ClienteDatosDeContacto",
                 columns: table => new
                 {
-                    InfoContactoID = table.Column<int>(nullable: false)
+                    id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Telefono = table.Column<string>(nullable: true),
-                    Pais = table.Column<string>(nullable: true),
-                    Estado = table.Column<string>(nullable: true),
-                    Direccion = table.Column<string>(nullable: true),
+                    pais = table.Column<string>(maxLength: 20, nullable: false),
+                    estado = table.Column<string>(maxLength: 20, nullable: false),
+                    direccion = table.Column<string>(maxLength: 20, nullable: false),
+                    telefono_local = table.Column<int>(maxLength: 20, nullable: false),
+                    telefono_celular = table.Column<int>(maxLength: 20, nullable: false),
                     ClienteID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InfoContacto", x => x.InfoContactoID);
+                    table.PrimaryKey("PK_Tabla_ClienteDatosDeContacto", x => x.id);
                     table.ForeignKey(
-                        name: "FK_InfoContacto_Clientes_ClienteID",
+                        name: "FK_Tabla_ClienteDatosDeContacto_Tabla_Clientes_ClienteID",
                         column: x => x.ClienteID,
-                        principalTable: "Clientes",
-                        principalColumn: "ClienteID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pagos",
-                columns: table => new
-                {
-                    PagoID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    NTransferencia = table.Column<int>(nullable: false),
-                    Monto = table.Column<int>(nullable: false),
-                    Registro = table.Column<DateTime>(nullable: false),
-                    ClienteID = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pagos", x => x.PagoID);
-                    table.ForeignKey(
-                        name: "FK_Pagos_Clientes_ClienteID",
-                        column: x => x.ClienteID,
-                        principalTable: "Clientes",
-                        principalColumn: "ClienteID",
+                        principalTable: "Tabla_Clientes",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -255,15 +234,10 @@ namespace WebApplication.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InfoContacto_ClienteID",
-                table: "InfoContacto",
+                name: "IX_Tabla_ClienteDatosDeContacto_ClienteID",
+                table: "Tabla_ClienteDatosDeContacto",
                 column: "ClienteID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pagos_ClienteID",
-                table: "Pagos",
-                column: "ClienteID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -284,10 +258,7 @@ namespace WebApplication.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "InfoContacto");
-
-            migrationBuilder.DropTable(
-                name: "Pagos");
+                name: "Tabla_ClienteDatosDeContacto");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -296,7 +267,7 @@ namespace WebApplication.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Tabla_Clientes");
         }
     }
 }
