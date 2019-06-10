@@ -30,30 +30,36 @@ namespace WebApplication.Controllers
         [HttpPost]
         public IActionResult Registro(RegistroClienteViewModel vm)
         {
-            if (ModelState.IsValid)
+
+            if (ctx.Clientes.Any(u => u.DNI == vm.DNI))
             {
-                Cliente ModeloCliente = new Cliente()
-                {
-                    DNI = vm.DNI,
-                    Nombre = vm.Nombre,
-                    Apellido = vm.Apellido,
-                };
-
-                ClienteDatosDeContacto datosContacto = new ClienteDatosDeContacto()
-                {
-                    Pais = vm.Pais,
-                    Estado = vm.Estado,
-                    Direccion = vm.Direccion,
-                    TelefonoLocal = vm.TelefonoLocal,
-                    TelefonoCelular = vm.TelefonoCelular
-                    
-                };
-                ModeloCliente.DatosDeContacto = datosContacto; // Propiedad de navegacion
-
-                ctx.Add(ModeloCliente);
-                ctx.SaveChanges();
+                var ValidacionDNI = "El DNI Ya Existe";
             }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    Cliente ModeloCliente = new Cliente()
+                    {
+                        DNI = vm.DNI,
+                        Nombre = vm.Nombre,
+                        Apellido = vm.Apellido,
+                    };
 
+                    ClienteDatosDeContacto datosContacto = new ClienteDatosDeContacto()
+                    {
+                        Pais = vm.Pais,
+                        Estado = vm.Estado,
+                        Direccion = vm.Direccion,
+                        TelefonoLocal = vm.TelefonoLocal,
+                        TelefonoCelular = vm.TelefonoCelular 
+                    };
+                    ModeloCliente.DatosDeContacto = datosContacto; // Propiedad de navegacion
+
+                    ctx.Add(ModeloCliente);
+                    ctx.SaveChanges();
+                }
+            }
             return View();
         }
     }

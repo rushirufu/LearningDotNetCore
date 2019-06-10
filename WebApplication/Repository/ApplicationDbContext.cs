@@ -54,11 +54,13 @@ namespace WebApplication.Repository
         {
             builder.ToTable(TableName);
             builder.HasKey(cliente => cliente.Id);
+            //builder.HasIndex(m => m.DNI).IsUnique();
+            builder.HasAlternateKey(cliente => cliente.DNI); // FK 
 
             builder.Property(cliente => cliente.Id).HasColumnName("id").ValueGeneratedOnAdd();
             builder.Property(cliente => cliente.DNI).HasColumnName("dni").HasMaxLength(20).IsRequired();
-            builder.Property(cliente => cliente.Nombre).HasColumnName("nombre").HasMaxLength(20).IsRequired();
-            builder.Property(cliente => cliente.Apellido).HasColumnName("apellido").HasMaxLength(20).IsRequired();
+            builder.Property(cliente => cliente.Nombre).HasColumnName("nombre").HasMaxLength(20);
+            builder.Property(cliente => cliente.Apellido).HasColumnName("apellido").HasMaxLength(20);
             // Relaciones
             builder.HasOne(relacion => relacion.DatosDeContacto) // Propiedad de navegacion
                    .WithOne(relacion => relacion.Cliente)
@@ -75,11 +77,11 @@ namespace WebApplication.Repository
             builder.HasKey(datosContacto => datosContacto.Id);
 
             builder.Property(datosContacto => datosContacto.Id).HasColumnName("id").ValueGeneratedOnAdd();
-            builder.Property(datosContacto => datosContacto.Pais).HasColumnName("pais").HasMaxLength(20).IsRequired();
-            builder.Property(datosContacto => datosContacto.Estado).HasColumnName("estado").HasMaxLength(20).IsRequired();
-            builder.Property(datosContacto => datosContacto.Direccion).HasColumnName("direccion").HasMaxLength(20).IsRequired();
-            builder.Property(datosContacto => datosContacto.TelefonoLocal).HasColumnName("telefono_local").HasMaxLength(20).IsRequired();
-            builder.Property(datosContacto => datosContacto.TelefonoCelular).HasColumnName("telefono_celular").HasMaxLength(20).IsRequired();
+            builder.Property(datosContacto => datosContacto.Pais).HasColumnName("pais").HasMaxLength(20);
+            builder.Property(datosContacto => datosContacto.Estado).HasColumnName("estado").HasMaxLength(20);
+            builder.Property(datosContacto => datosContacto.Direccion).HasColumnName("direccion").HasMaxLength(20);
+            builder.Property(datosContacto => datosContacto.TelefonoLocal).HasColumnName("telefono_local").HasMaxLength(20);
+            builder.Property(datosContacto => datosContacto.TelefonoCelular).HasColumnName("telefono_celular").HasMaxLength(20);
         }
     }
 
@@ -87,7 +89,7 @@ namespace WebApplication.Repository
     {
         [NotMapped]
         public int Id { get; set; }
-        [Display(Name = "Documento nacional de Identidad"),]
+        [Display(Name = "Documento nacional de Identidad")]
         public string DNI { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }

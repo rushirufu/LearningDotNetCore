@@ -199,8 +199,7 @@ namespace WebApplication.Migrations
                     b.Property<string>("DNI")
                         .IsRequired()
                         .HasColumnName("dni")
-                        .HasMaxLength(20)
-                        .IsUnicode(true);
+                        .HasMaxLength(20);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -208,6 +207,8 @@ namespace WebApplication.Migrations
                         .HasMaxLength(20);
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("DNI");
 
                     b.ToTable("Tabla_Clientes");
                 });

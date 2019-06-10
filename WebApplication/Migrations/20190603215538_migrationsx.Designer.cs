@@ -10,8 +10,8 @@ using WebApplication.Repository;
 namespace WebApplication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190603174633_Migrationxx")]
-    partial class Migrationxx
+    [Migration("20190603215538_migrationsx")]
+    partial class migrationsx
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -201,8 +201,7 @@ namespace WebApplication.Migrations
                     b.Property<string>("DNI")
                         .IsRequired()
                         .HasColumnName("dni")
-                        .HasMaxLength(20)
-                        .IsUnicode(true);
+                        .HasMaxLength(20);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -210,6 +209,8 @@ namespace WebApplication.Migrations
                         .HasMaxLength(20);
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("DNI");
 
                     b.ToTable("Tabla_Clientes");
                 });

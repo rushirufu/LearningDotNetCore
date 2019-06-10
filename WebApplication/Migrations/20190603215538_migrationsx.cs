@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApplication.Migrations
 {
-    public partial class Migrationxx : Migration
+    public partial class migrationsx : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,6 +62,7 @@ namespace WebApplication.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tabla_Clientes", x => x.id);
+                    table.UniqueConstraint("AK_Tabla_Clientes_dni", x => x.dni);
                 });
 
             migrationBuilder.CreateTable(
