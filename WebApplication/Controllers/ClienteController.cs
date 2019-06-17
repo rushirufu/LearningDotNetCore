@@ -33,7 +33,7 @@ namespace WebApplication.Controllers
 
             if (ctx.Clientes.Any(u => u.DNI == vm.DNI))
             {
-                var ValidacionDNI = "El DNI Ya Existe";
+                //var ValidacionDNI = "El DNI Ya Existe";
             }
             else
             {
